@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Formulaire d'inscription</title>
+  <script src="https://unpkg.com/vue@next"></script>
+</head>
+
+<body>
+  <div id="app">
+    <h1>Formulaire d'inscription</h1>
+    <form @submit.prevent="submitForm">
+      <div>
+        <label for="name">Nom :</label>
+        <input type="text" id="name" v-model="name" required>
+      </div>
+      <div>
+        <label for="email">Adresse e-mail :</label>
+        <input type="email" id="email" v-model="email" required>
+      </div>
+      <div>
+        <label for="password">Mot de passe :</label>
+        <input type="password" id="password" v-model="password" :class="{ 'is-invalid': passwordError }" required>
+      </div>
+      <div>
+        <label for="confirm-password">Confirmation du mot de passe :</label>
+        <input type="password" id="confirm-password" v-model="confirmPassword"
+          :class="{ 'is-invalid': confirmPasswordError }" required>
+      </div>
+      <button type="submit">S'inscrire</button>
+    </form>
+  </div>
+
+  <script>
+    const app = Vue.createApp({
+      data() {
+        return {
+          name: '',
+          email: '',
+          password: '',
+          confirmPassword: '',
+          passwordError: '',
+          confirmPasswordError: ''
+        }
+      },
+      methods: {
+        submitForm() {
+          // Valider les champs de saisie avant la soumission
+          if (!this.validateName() || !this.validateEmail() || !this.validatePassword() || !this.validateConfirmPassword()) {
+            return;
+          }
+
+          // Soumettre le formulaire si tous les champs sont valides
+          alert('Formulaire soumis !');
+        },
+        validateName() {
+          // Le nom doit contenir au moins deux caractères alphabétiques
+          const regex = /^[a-zA-Z]{2,}$/;
+          if (!regex.test(this.name)) {
+            alert("Le nom doit contenir au moins deux caractères alphabétiques");
+            return false;
+          }
+          return true;
+        },
+        validateEmail() {
+          // Valider l'adresse e-mail en utilisant une expression régulière simplifiée
+          const regex = /^\S+@\S+\.\S+$/;
+          if (!regex.test(this.email)) {
+            alert("L'adresse e-mail n'est pas valide");
+            return false;
+          }
+          return true;
+        },
+        validatePassword() {
+          // Le mot de passe doit être renseigné
+          if (this.password === '') {
+            this.passwordError = 'Le mot de passe est obligatoire';
+            return false;
+          }
+          // Le mot de passe doit contenir au moins 8 caractères
+          if (this.password.length < 8) {
+            this.passwordError = 'Le mot de passe doit contenir au moins 8 caractères';
+            return false;
+          }
+          // Le mot de passe doit contenir au moins une lettre majuscule
+          if (!/[A-Z]/.test(this.password)) {
+            this.passwordError = 'Le mot de passe doit contenir au moins une lettre majuscule';
+            return false;
+          }
+          // Le mot de passe doit contenir au moins une lettre minuscule
+          if (!/[a-z]/.test(this.password)) {
+            this.passwordError = 'Le mot de passe doit contenir au moins une lettre minuscule';
+            return false;
+          }
+          // Le mot de passe doit contenir au moins un chiffre
+          if (!/\d/.test(this.password)) {
+            this.passwordError = 'Le mot de passe doit contenir au moins un chiffre';
+            return false;
+          }
+          // Le mot de passe doit contenir au moins un caractère spécial
+          if (!/[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]/g.test(this.password)) {
+            this.passwordError = 'Le mot de passe doit contenir au moins un caractère spécial !@$%^&*()_+-=[]{};:\'",.<>/?';
+            return false;
+          }
+          return true;
+        },
+
+        validateConfirmPassword() {
+          // Le mot de passe de confirmation doit correspondre au mot de passe saisi
+          if (this.confirmPassword === '') {
+            this.confirmPasswordError = 'La confirmation du mot de passe est obligatoire';
+            return false;
+          } else if (this.confirmPassword !== this.password) {
+            this.confirmPasswordError = 'Le mot de passe de confirmation ne correspond pas au mot de passe saisi';
+            return false;
+          }
+          return true;
+        }
+      }
+    });
+
+    app.mount('#app');
+  </script>
+</body>
+
+</html>

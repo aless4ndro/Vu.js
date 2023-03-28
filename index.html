@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://unpkg.com/vue@next"></script>
+</head>
+
+<body>
+  <div id="app" v-bind:style="{ backgroundColor: bgColor }">
+    <h1 v-on:mouseover="bgColor = 'red'" v-on:mouseleave="bgColor = 'white'">
+      Todo List Vu.js</h1>
+    <form @submit.prevent="addTask">
+      <input type="text" v-model="newTask" placeholder="Enter task">
+      <button type="submit">Add</button>
+    </form>
+    <ul>
+      <li v-for="(task, index) in tasks" :key="index">
+        <input type="checkbox" v-model="task.completed">
+        <span :class="{ completed: task.completed }">{{ task.name }}</span>
+        <button @click="removeTask(index)">Delete</button>
+      </li>
+    </ul>
+  </div>
+  <div id="clock">
+    <p>{{ time }}</p>
+    <a href="vu.html">
+      <p>login</p>
+    </a>
+  </div>
+
+  <script>
+    //todo-liste created
+    const TodoList = {
+      data() {
+        return {
+          tasks: [],
+          newTask: "",
+          bgColor: "white",
+
+        };
+      },
+      methods: {
+        addTask() {
+          if (this.newTask !== "") {
+            this.tasks.push({
+              name: this.newTask,
+              completed: false,
+            });
+            this.newTask = "";
+          }
+        },
+        removeTask(index) {
+          this.tasks.splice(index, 1);
+        },
+      },
+    };
+
+    Vue.createApp(TodoList).mount("#app");
+
+
+    const Clock = {
+      data() {
+        return {
+          time: "",
+        };
+      },
+      mounted() {
+        setInterval(() => {
+          this.time = new Date().toLocaleTimeString();
+        }, 1000);
+      },
+    };
+
+    Vue.createApp(Clock).mount("#clock");
+
+
+
+    /*Dans ce code ororloge, nous avons :
+
+Un template qui affiche l'heure actuelle dans un élément h1. L'heure est stockée dans la propriété time.
+Un objet data qui définit la propriété time comme une chaîne vide.
+La méthode mounted() est appelée lorsque le composant est monté dans le DOM. Elle utilise la fonction setInterval() pour mettre à jour la propriété time toutes les secondes en utilisant la méthode toLocaleTimeString() de l'objet Date.*/
+  </script>
+
+</body>
+
+</html>
